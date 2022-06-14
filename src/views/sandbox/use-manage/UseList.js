@@ -1,21 +1,43 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import { Table, Button, Modal,Switch} from 'antd'
+import { Table, Button, Modal,Switch,Form, Input, Radio,Select} from 'antd'
 import {
     DeleteOutlined,
     ExclamationCircleOutlined,
     EditOutlined
 } from '@ant-design/icons';
 const { confirm } = Modal;
+const { Option } = Select
 
 
-export default function RightList() {
+
+
+export default function UseList() {
     const [tableList, setTableList] = useState([])
-    // const [isShow,setIsShow] = useState(false)
+    const [visible, setVisible] = useState(false);
+    const [roleList, setRoleLIst] = useState([]);
+    const [regionList,setRegionList] = useState([])
+
     useEffect(() => {
         axios('http://localhost:9000/users?_expand=role').then((res) => {
             const list = res.data
             setTableList(list)
+        })
+    }, [])
+
+    useEffect(() => {
+        axios('http://localhost:9000/regions').then((res) => {
+            const list = res.data
+            console.log('regionList',list)
+            setRegionList(list)
+        })
+    }, [])
+
+    useEffect(() => {
+        axios('http://localhost:9000/roles').then((res) => {
+            const list = res.data
+            console.log('rolesList',list)
+            setRoleLIst(list)
         })
     }, [])
 
@@ -57,7 +79,7 @@ export default function RightList() {
                   )
               }
           },
-      ];
+    ];
 
     //删除
     const deleteMethod = (item) => {
@@ -65,6 +87,7 @@ export default function RightList() {
 
 
     }
+
     const showConfirm = (item) => {
         confirm({
           title: '删除',
@@ -79,15 +102,140 @@ export default function RightList() {
         });
     };
 
+    const onCreate = (values) => {
+        setVisible(false);
+    };
+
   return (
       <div>
-          <Table dataSource={tableList} hideSelectAll={false} columns={columns} pagination={{
-              pageSize: 5
-          }}
-              rowKey={
-                  item=>item.id
-              }
-          />
+            <Button type='primary' onClick={() => {
+                setVisible(true);
+            }}>添加用户</Button>
+            <Table dataSource={tableList} hideSelectAll={false} columns={columns} pagination={{
+                pageSize: 5
+            }}
+                rowKey={
+                    item=>item.id
+                }
+            />
+          <CollectionCreateForm
+                regionList={regionList}
+                roleList={ roleList}
+                visible={visible}
+                onCreate={onCreate}
+                onCancel={() => {
+                    setVisible(false);
+                }}
+            />
       </div>
   )
 }
+
+
+const CollectionCreateForm = ({ roleList,regionList,visible, onCreate, onCancel }) => {
+    const [form] = Form.useForm();
+    return (
+      <Modal
+        visible={visible}
+        title="添加用户"
+        okText="Create"
+        cancelText="Cancel"
+        onCancel={onCancel}
+        onOk={() => {
+          form
+            .validateFields()
+            .then((values) => {
+              form.resetFields();
+              onCreate(values);
+            })
+            .catch((info) => {
+              console.log('Validate Failed:', info);
+            });
+        }}
+      >
+        <Form
+        //   form={form}
+          layout="vertical"
+        //   name="form_in_modal"
+        //   initialValues={{
+        //     modifier: 'public',
+        //   }}
+        >
+            <Form.Item
+                name="username"
+                label="用户名"
+                rules={[
+                {
+                    required: true,
+                    message: '请输入用户名',
+                },
+                ]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                name="password"
+                label="密码"
+                rules={[
+                        {
+                            required: true,
+                            message: '请输入密码',
+                        },
+                    ]}
+            >
+            <Input />
+            </Form.Item>
+            <Form.Item
+                name="region"
+                label="区域"
+                rules={[
+                        {
+                            required: true,
+                            message: '请输入密码',
+                        },
+                    ]}
+            >
+                <Select
+                    defaultValue="lucy"
+                    // onChange={handleChange}
+                    >
+                        {
+                            regionList.map((item) =>
+                                <Option value={item.value} key={ item.id}>{ item.title}</Option>
+                            )
+                        }
+
+                </Select>
+            </Form.Item>
+            <Form.Item
+                name="roleId"
+                label="角色"
+                rules={[
+                        {
+                            required: true,
+                            message: '请输入密码',
+                        },
+                    ]}
+            >
+                <Select
+                    defaultValue="lucy"
+                    // onChange={handleChange}
+                    >
+                        {
+                            roleList.map((item) =>
+                                <Option value={item.roleType} key={ item.id}>{ item.roleName}</Option>
+                            )
+                        }
+
+                </Select>
+            </Form.Item>
+            <Form.Item name="modifier" className="collection-create-form_last-form-item">
+                <Radio.Group>
+                <Radio value="public">Public</Radio>
+                <Radio value="private">Private</Radio>
+                </Radio.Group>
+            </Form.Item>
+        </Form>
+      </Modal>
+    );
+  };
