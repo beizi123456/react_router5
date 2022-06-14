@@ -39,11 +39,11 @@ export default function NewsSandBox() {
                 style={{
                     margin: '24px 16px',
                     padding: 24,
-                    minHeight: 280,
+                    minHeight: '100vh',
                 }}>
                     <Switch>
                         <Route path='/home' component={Home} />
-                        <Route path='/use-manage/list' component={UseList} />
+                        <Route path='/user-manage/list' component={UseList} />
                         <Route path='/right-manage/role/list' component={RoleList} />
                         <Route path='/right-manage/right/list' component={RightList} />
                         <Redirect from='/' to='/home' exact></Redirect>
