@@ -13,6 +13,7 @@ import NewsSandBox from '../views/sandbox/NewsSandBox'
                 <Route path='/login' component={Login}></Route>
                {/* <Route path='/' component={NewsSandBox}></Route> */}
                <Route path='/' render={() =>
+
                    localStorage.getItem('token')?<NewsSandBox/>:<Redirect to='/login'/>
                }></Route>
              </Switch>

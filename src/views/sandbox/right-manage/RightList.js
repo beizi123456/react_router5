@@ -13,7 +13,7 @@ export default function RightList() {
     const [tableList, setTableList] = useState([])
     // const [isShow,setIsShow] = useState(false)
     useEffect(() => {
-        axios('http://localhost:9000/rights?_embed=children').then((res) => {
+        axios('/rights?_embed=children').then((res) => {
             const list = res.data
             list.forEach((item) => {
                 if (item.children.length <= 0) {
@@ -75,12 +75,12 @@ export default function RightList() {
         //当前页面同步状态+ 后端同步
         if (item.grade === 1) {
             setTableList(tableList.filter((data) => data.id !== item.id))
-            axios.delete(`http://localhost:9000/rights/${item.id}`)
+            axios.delete(`/rights/${item.id}`)
         } else {
             let list =tableList.filter((data) => data.id === item.rightId)
             list[0].children = list[0].children.filter((data) => data.id !== item.id)
             setTableList([...tableList])
-            axios.delete(`http://localhost:9000/children/${item.id}`)
+            axios.delete(`/children/${item.id}`)
         }
 
     }
@@ -101,11 +101,11 @@ export default function RightList() {
         item.pagepermisson = item.pagepermisson === 1?0:1
         setTableList([...tableList])
         if (item.grade === 1) {
-            axios.patch(`http://localhost:9000/rights/${item.id}`, {
+            axios.patch(`/rights/${item.id}`, {
                 pagepermisson:item.pagepermisson
             })
         } else {
-            axios.patch(`http://localhost:9000/children/${item.id}`, {
+            axios.patch(`/children/${item.id}`, {
                 pagepermisson:item.pagepermisson
             })
 

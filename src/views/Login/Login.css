@@ -1,0 +1,18 @@
+.formContainer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 300px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, .7);
+  transform: translate(-50%,-50%);
+}
+
+.loginTittle {
+  height: 80px;
+  color: #ffff;
+  font-size: 30px ;
+  line-height: 80px;
+  text-align: center;
+}

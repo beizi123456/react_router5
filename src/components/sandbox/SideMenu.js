@@ -14,30 +14,33 @@ const iconList = {
     "/user-manage": <NotificationOutlined />,
     "/right-manage":<UserOutlined />
 }
-
+const { role: { rights} } = JSON.parse(localStorage.getItem('token'))
 //遍历
 function menuTree(list) {
-    list.filter((item) => item.pagepermisson !== 0).forEach((item) => {
+    list.filter((item) => item.pagepermisson !== 0 && rights.includes(item.key)).forEach((item) => {
         item.icon = iconList[item.key];
         item.label = item.title;
         if (item.children && item.children.length === 0 ) {
             item.children = ''
         }
         item.children && menuTree(item.children);
-
     })
 }
+
 
 
 function SideMenu(props) {
     const [menuList, setMenuList] = useState([])
     useEffect(() => {
-        axios.get('http://localhost:9000/rights?_embed=children').then((res) => {
+        axios.get('/rights?_embed=children').then((res) => {
             let list = res.data
             menuTree(list)
+
+            // let listArr = JSON.parse(JSON.stringify(list))
             setMenuList([...list])
         })
     }, [])
+
 
     const selectKeys = [props.location.pathname]
     const openKeys = ['/'+ props.location.pathname.split('/')[1]]
