@@ -14,38 +14,35 @@ const iconList = {
     "/user-manage": <NotificationOutlined />,
     "/right-manage":<UserOutlined />
 }
-const { role: { rights} } = JSON.parse(localStorage.getItem('token'))
-//遍历
-function menuTree(list) {
-    list.filter((item) => item.pagepermisson !== 0 && rights.includes(item.key)).forEach((item) => {
-        item.icon = iconList[item.key];
-        item.label = item.title;
-        if (item.children && item.children.length === 0 ) {
-            item.children = ''
-        }
-        item.children && menuTree(item.children);
-    })
-}
 
 
 
 function SideMenu(props) {
     const [menuList, setMenuList] = useState([])
+    const { role: { rights} } = JSON.parse(localStorage.getItem('token'))
     useEffect(() => {
         axios.get('/rights?_embed=children').then((res) => {
             let list = res.data
             menuTree(list)
-
-            // let listArr = JSON.parse(JSON.stringify(list))
             setMenuList([...list])
         })
+        // eslint-disable-next-line
     }, [])
-
-
+    //遍历
+    function menuTree(list) {
+        list.filter((item) => item.pagepermisson !== 0 && rights.includes(item.key)).forEach((item) => {
+            item.icon = iconList[item.key];
+            item.label = item.title;
+            if (item.children && item.children.length === 0 ) {
+                item.children = ''
+            }
+            item.children && menuTree(item.children);
+        })
+    }
     const selectKeys = [props.location.pathname]
     const openKeys = ['/'+ props.location.pathname.split('/')[1]]
     return (
-        <Sider trigger={null} collapsible>
+        <Sider trigger={null} collapsible collapsed={ true}>
             <div style={{display:"flex",height:'100%','flexDirection':'column'}}>
             <div className="logo">
                 管理系统

@@ -21,13 +21,23 @@ export default function NewsAdd(props) {
     const [formLayout] = useState('horizontal');
     const NewsForm = useRef(null)
 
-    const User = JSON.parse(localStorage.getItem('token'))
+    // const User = JSON.parse(localStorage.getItem('token'))
     useEffect(() => {
         axios.get('/categories').then((res) => {
             setCategoryList(res.data)
         })
      },[])
 
+     useEffect(() => {
+        axios.get(`/news/${props.match.params.id}?_expand=category&_expand=role`).then((res) => {
+            let { title, categoryId ,content} = res.data
+            NewsForm.current.setFieldsValue({
+                title,
+                categoryId
+            })
+            setContent(content)
+        })
+     },[props.match.params.id])
     const handleNext = () => {
         if (current === 0) {
             NewsForm.current.validateFields().then(res => {
@@ -49,18 +59,11 @@ export default function NewsAdd(props) {
         setCurrent(current-1)
     }
     const handleSave = (auditState) => {
-        axios.post('/news', {
+        debugger;
+        axios.patch(`/news/${props.match.params.id}`, {
             ...formInfo,
             content: content,
-            region:User.region?User.region:'全球',
-            author: User.username,
-            roleId: User.roleId,
             auditState: auditState,
-            publishState: 0,
-            createTime: Date.now(),
-            star: 0,
-            view: 0,
-            // publishTime: 0
         }).then(() => {
             props.history.push(auditState === 0 ? '/news-manage/draft' : '/audit-manage/list')
             notification.open({
@@ -90,9 +93,10 @@ export default function NewsAdd(props) {
   return (
         <div>
             <PageHeader
-                className="site-page-header"
-                title="撰写新闻"
-                subTitle="This is a subtitle"
+              className="site-page-header"
+              title="更新新闻"
+              subTitle="This is a subtitle"
+              onBack={() => props.history.goBack() }
             />
             <Steps current={current}>
                 <Step title="基本信息" description="新闻标题，新闻分类" />
@@ -127,9 +131,10 @@ export default function NewsAdd(props) {
                   <div className={current === 1 ? '' : style.active}>
                       <NewsEditor getContent={(value) => {
                           setContent(value)
-                      }}/>
+                      }} content={content}/>
                   </div>
                   <div className={current === 2 ? '' : style.active}>
+                    33333
                   </div>
                 </div>
                 <div style={{marginTop:'50px'}}>

@@ -116,7 +116,7 @@ export default function RightList() {
 
   return (
       <div>
-          <Table dataSource={tableList} hideSelectAll={false} columns={columns} />
+          <Table dataSource={tableList} hideSelectAll={false} columns={columns} rowKey={ item=>item.id }/>
       </div>
   )
 }

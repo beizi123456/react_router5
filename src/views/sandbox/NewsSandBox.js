@@ -2,7 +2,7 @@ import React, { useEffect} from 'react'
 
 
 
-import './NewsSandBox.modules.css'
+import './NewsSandBox.css'
 
 import SideMenu from '../../components/sandbox/SideMenu'
 import TopHeader from '../../components/sandbox/TopHeader'
@@ -20,21 +20,19 @@ export default function NewsSandBox() {
         NProgress.done()
     })
     return (
-
       <Layout>
           <SideMenu></SideMenu>
           <Layout className="site-layout">
             <TopHeader></TopHeader>
               { /*内容组件*/}
               <Content
-                className="site-layout-background"
+                    className='site-layout-background'
                 style={{
                     margin: '24px 16px',
                     padding: 24,
                     minHeight: '100vh',
                   }}>
                   <NewsRouter></NewsRouter>
-
                 </Content>
             </Layout>
         </Layout>
