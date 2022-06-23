@@ -10,6 +10,7 @@
         "axios": "^0.27.2",
         "draft-js": "^0.11.7",
         "draftjs-to-html": "^0.9.1",
+        "echarts": "^5.3.3",
         "md5": "^2.3.0",
         "moment": "^2.29.3",
         "monent": "0.0.2-security",
@@ -21,6 +22,7 @@
         "react-router-dom": "^5.3.3",
         "react-scripts": "5.0.1",
         "redux": "^4.2.0",
+        "redux-persist": "^6.0.0",
         "sass": "^1.52.3",
         "web-vitals": "^2.1.4"
     },
