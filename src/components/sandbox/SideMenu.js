@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios';
+import { connect } from 'react-redux'
 import { Layout, Menu} from 'antd'
 import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+
 
 
 
@@ -42,7 +44,7 @@ function SideMenu(props) {
     const selectKeys = [props.location.pathname]
     const openKeys = ['/'+ props.location.pathname.split('/')[1]]
     return (
-        <Sider trigger={null} collapsible collapsed={ true}>
+        <Sider trigger={null} collapsible collapsed={ props.isCollapsed}>
             <div style={{display:"flex",height:'100%','flexDirection':'column'}}>
             <div className="logo">
                 管理系统
@@ -68,4 +70,8 @@ function SideMenu(props) {
   )
 }
 
-export default withRouter(SideMenu)
+const mapStateToProps = ({CollapsedReducer: {isCollapsed } }) => ({
+    isCollapsed
+})
+
+export default connect(mapStateToProps)(withRouter(SideMenu))

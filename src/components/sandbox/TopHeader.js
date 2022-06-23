@@ -1,19 +1,22 @@
-import React, { useState } from 'react'
+import React  from 'react'
 import { withRouter } from 'react-router-dom'
 import { Layout, Dropdown, Menu ,Avatar} from 'antd'
 import { UserOutlined } from '@ant-design/icons';
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-  } from '@ant-design/icons';
+} from '@ant-design/icons';
+import { connect } from 'react-redux'
 
 const { Header } = Layout;
 
 
- function TopHeader(props) {
-    const [collapsed, setCollapsed] = useState(false);
+function TopHeader(props) {
+    console.log(props)
+    // const [collapsed, setCollapsed] = useState(false);
     const changeCollapsed = () => {
-        setCollapsed(!collapsed)
+        //改变state的isCollapsed的状态
+        props.changeCollapsed()
     }
 
      const { role:{roleName},username} = JSON.parse(localStorage.getItem('token'))
@@ -30,7 +33,7 @@ const { Header } = Layout;
     return (
         <Header className="site-layout-background" style={{ padding: '0 16px'}}>
             {
-               collapsed?<MenuUnfoldOutlined onCldick={changeCollapsed}/>:<MenuFoldOutlined onClick={changeCollapsed}/>
+               props.isCollapsed?<MenuUnfoldOutlined onClick={changeCollapsed}/>:<MenuFoldOutlined onClick={changeCollapsed}/>
             }
             <div style={{ float:'right'}}>
                 <span>欢迎<span style={{color:'#1890ff'}}>{username}</span>回来</span>
@@ -41,6 +44,32 @@ const { Header } = Layout;
 
         </Header>
     )
+ }
+
+ /**
+  * connect(
+  *  //mapStateToProps
+  * //mapDispatchToProps
+  * )(被包装的组件)
+  *
+ */
+
+const mapStateToProps = ({ CollapsedReducer: {isCollapsed }}) => {
+    return {
+        isCollapsed
+    }
 }
 
-export default withRouter(TopHeader)
+const maoDispatchToProps = {
+    changeCollapsed() {
+        return {
+            type: 'change_collapsed',
+            //payload:
+
+        }
+
+    }
+
+}
+
+export default connect(mapStateToProps,maoDispatchToProps)(withRouter(TopHeader))
